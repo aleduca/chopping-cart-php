@@ -45,18 +45,45 @@ class Cart
 
   public function remove(int $id)
   {
-    if (isset($_SESSION['cart']['products'])) {
-      foreach ($this->getCart() as $index => $product) {
-        if ($product->getId() === $id) {
-          $product->setQuantity($product->getQuantity() - 1);
+    foreach ($this->getCart() as $index => $product) {
+      if ($product->getId() === $id) {
+        $product->setQuantity($product->getQuantity() - 1);
 
-          if ($product->getQuantity() <= 0) {
-            unset($_SESSION['cart']['products'][$index]);
-          }
+        if ($product->getQuantity() <= 0) {
+          unset($_SESSION['cart']['products'][$index]);
+        }
 
-          $_SESSION['cart']['total'] -= $product->getPrice();
-          // unset($_SESSION['cart']['products'][$index]);
-          // $_SESSION['cart']['total'] -= $product->getPrice() * $product->getQuantity();
+        $_SESSION['cart']['total'] -= $product->getPrice();
+        // unset($_SESSION['cart']['products'][$index]);
+        // $_SESSION['cart']['total'] -= $product->getPrice() * $product->getQuantity();
+      }
+    }
+  }
+
+  private function setTotalIfChangeQty($product, $qty)
+  {
+    if ((int)$qty > $product->getQuantity()) {
+      $_SESSION['cart']['total'] += $product->getPrice() * ((int)$qty - $product->getQuantity());
+    } else {
+      // 2000 = 1000 * (2-1) = 2000+2000 = 4000
+      $_SESSION['cart']['total'] -= $product->getPrice() * ($product->getQuantity() - (int)$qty);
+    }
+  }
+
+  public function updateQty($id, $qty)
+  {
+    foreach ($this->getCart() as $index => $product) {
+      if ($product->getId() === (int)$id) {
+        if ($product->getQuantity() === (int)$qty) {
+          return;
+        }
+
+        $this->setTotalIfChangeQty($product, $qty);
+
+        $product->setQuantity((int)$qty);
+
+        if ($product->getQuantity() <= 0) {
+          unset($_SESSION['cart']['products'][$index]);
         }
       }
     }

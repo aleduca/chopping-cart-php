@@ -45,10 +45,15 @@ var_dump($_SESSION['cart'] ?? []);
 <body>
   <a href="/mycart.php">Go to cart</a>
   <ul>
-    <li>Geladeira <a href="?id=1">Add</a> R$ 1000</li>
-    <li>Mouse <a href="?id=2">Add</a> R$ 2000</li>
-    <li>Teclado <a href="?id=3">Add</a> R$ 100</li>
-    <li>Monitor <a href="?id=4">Add</a> $$ 50</li>
+    <?php foreach ($products as $product) : ?>
+      <li>
+        <?php echo $product['name']; ?>
+        <a href="?id=<?php echo $product['id']; ?>">Add</a>
+        R$ <?php echo number_format($product['price'], 2, ',', '.'); ?>
+      </li>
+
+    <?php endforeach; ?>
+
   </ul>
 </body>
 
