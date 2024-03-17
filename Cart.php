@@ -2,6 +2,16 @@
 
 class Cart
 {
+  public function __construct()
+  {
+    if (!isset($_SESSION['cart'])) {
+      $_SESSION['cart'] = [
+        'products' => [],
+        'total' => 0
+      ];
+    }
+  }
+
 
   public function add(Product $product)
   {
@@ -38,8 +48,15 @@ class Cart
     if (isset($_SESSION['cart']['products'])) {
       foreach ($this->getCart() as $index => $product) {
         if ($product->getId() === $id) {
-          unset($_SESSION['cart']['products'][$index]);
-          $_SESSION['cart']['total'] -= $product->getPrice() * $product->getQuantity();
+          $product->setQuantity($product->getQuantity() - 1);
+
+          if ($product->getQuantity() <= 0) {
+            unset($_SESSION['cart']['products'][$index]);
+          }
+
+          $_SESSION['cart']['total'] -= $product->getPrice();
+          // unset($_SESSION['cart']['products'][$index]);
+          // $_SESSION['cart']['total'] -= $product->getPrice() * $product->getQuantity();
         }
       }
     }

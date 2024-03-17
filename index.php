@@ -5,6 +5,9 @@ require 'Product.php';
 
 session_start();
 
+// session_destroy();
+// die();
+
 $products = [
   1 => ['id' => 1, 'name' => 'geladeira', 'price' => 1000, 'quantity' => 1],
   2 => ['id' => 2, 'name' => 'mouse', 'price' => 100, 'quantity' => 1],
